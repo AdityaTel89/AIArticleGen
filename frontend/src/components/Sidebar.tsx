@@ -7,8 +7,6 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   PlusIcon,
-  SunIcon,
-  MoonIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
@@ -29,18 +27,11 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout, user } = useAuth();
-  const [isDark, setIsDark] = useState(true);
   const [chatHistory, setChatHistory] = useState<ChatHistory[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Initialize theme
-    const theme = localStorage.getItem('theme') || 'dark';
-    const isDarkMode = theme === 'dark';
-    setIsDark(isDarkMode);
-    applyTheme(isDarkMode);
-
-    // Load chat history
+    // Load chat history on mount
     loadChatHistory();
   }, []);
 
@@ -56,18 +47,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       window.removeEventListener('chatHistoryUpdated', handleHistoryUpdate);
     };
   }, []);
-
-  const applyTheme = (isDarkMode: boolean) => {
-    const root = document.documentElement;
-    
-    if (isDarkMode) {
-      root.classList.add('dark');
-      root.setAttribute('data-theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      root.setAttribute('data-theme', 'light');
-    }
-  };
 
   const loadChatHistory = () => {
     const saved = localStorage.getItem('chatHistory');
@@ -86,13 +65,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     } else {
       setChatHistory([]);
     }
-  };
-
-  const toggleTheme = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    applyTheme(newTheme);
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
   };
 
   const handleLogout = () => {
@@ -273,22 +245,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 
           {/* Bottom Actions */}
           <div className="border-t border-gray-300 dark:border-gray-800 pt-4 space-y-2">
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={toggleTheme}
-              className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300 ${
-                isOpen ? '' : 'justify-center px-2'
-              }`}
-              title={!isOpen ? (isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode') : ''}
-            >
-              {isDark ? (
-                <SunIcon className="w-5 h-5 shrink-0" />
-              ) : (
-                <MoonIcon className="w-5 h-5 shrink-0" />
-              )}
-              {isOpen && <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>}
-            </button>
-
             {/* Logout */}
             <button
               onClick={handleLogout}

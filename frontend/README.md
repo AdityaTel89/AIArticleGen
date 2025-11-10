@@ -1,73 +1,48 @@
-# React + TypeScript + Vite
+# AIArticleGen - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + TypeScript + Vite frontend.
 
-Currently, two official plugins are available:
+## 🚀 Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+npm install
+cp .env.example .env
+npm run dev # localhost:5173
 
-## React Compiler
+## 📦 Build
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+npm run build # Production build
+npm run preview # Preview build
 
-## Expanding the ESLint configuration
+## 🔧 Environment
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+VITE_API_URL=http://localhost:3000/api
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 📁 Structure
+src/
+├── api/ # API calls
+├── components/ # Reusable components
+├── context/ # Auth context
+├── pages/ # Routes (Home, Blog, Login)
+└── App.tsx # Main app
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚢 Deploy to Vercel
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+vercel --prod
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**Or via dashboard:**
+1. Import GitHub repo
+2. Framework: Vite
+3. Build: `npm run build`
+4. Output: `dist`
+5. Add `VITE_API_URL` env var
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🛠️ Stack
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+React • TypeScript • Vite • Tailwind • React Router • Axios
+
+## 📝 Key Files
+
+- `src/context/AuthContext.tsx` - Authentication
+- `src/api/articleApi.ts` - API client
+- `src/pages/Home.tsx` - Chat interface
+- `src/pages/Blog.tsx` - Articles list
