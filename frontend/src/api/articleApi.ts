@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api/articles';
+// Use environment variable or fallback to localhost
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 // Get auth token
 const getAuthHeaders = () => {
@@ -9,12 +10,12 @@ const getAuthHeaders = () => {
 };
 
 export const fetchArticles = () => {
-  return axios.get(API_URL);
+  return axios.get(`${API_URL}/articles`);
 };
 
 export const generateArticle = (title: string, details?: string) => {
   return axios.post(
-    `${API_URL}/generate`,
+    `${API_URL}/articles/generate`,
     { title, details },
     { headers: getAuthHeaders() }
   );
@@ -22,12 +23,12 @@ export const generateArticle = (title: string, details?: string) => {
 
 export const bulkGenerateArticles = (titles: string[], details?: string) => {
   return axios.post(
-    `${API_URL}/bulk-generate`,
+    `${API_URL}/articles/bulk-generate`,
     { titles, details },
     { headers: getAuthHeaders() }
   );
 };
 
 export const deleteArticle = (id: number) => {
-  return axios.delete(`${API_URL}/${id}`, { headers: getAuthHeaders() });
+  return axios.delete(`${API_URL}/articles/${id}`, { headers: getAuthHeaders() });
 };

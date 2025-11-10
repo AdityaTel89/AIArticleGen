@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api/auth';
+// Use environment variable or fallback to localhost
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 interface User {
   id: string;
@@ -44,23 +45,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   });
 
   const login = async (email: string, password: string) => {
-    const response = await axios.post(`${API_URL}/login`, { email, password });
-    const { user: userData, token: authToken } = response.data;
+    try {
+      const response = await axios.post(`${API_URL}/auth/login`, { email, password });
+      const { user: userData, token: authToken } = response.data;
 
-    setUser(userData);
-    setToken(authToken);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', authToken);
+      setUser(userData);
+      setToken(authToken);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', authToken);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Login failed');
+    }
   };
 
   const signup = async (email: string, password: string, name?: string) => {
-    const response = await axios.post(`${API_URL}/signup`, { email, password, name });
-    const { user: userData, token: authToken } = response.data;
+    try {
+      const response = await axios.post(`${API_URL}/auth/signup`, {
+        email,
+        password,
+        name,
+      });
+      const { user: userData, token: authToken } = response.data;
 
-    setUser(userData);
-    setToken(authToken);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', authToken);
+      setUser(userData);
+      setToken(authToken);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', authToken);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Signup failed');
+    }
   };
 
   const logout = () => {

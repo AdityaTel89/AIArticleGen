@@ -6,7 +6,10 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import CodeBlock from '../components/CodeBlock';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext'; // ✅ Import useAuth
+import { useAuth } from '../context/AuthContext';
+
+// Use environment variable or fallback to localhost
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -30,14 +33,12 @@ export default function Home() {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { token } = useAuth(); // ✅ Get token from context
+  const { token } = useAuth();
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Load chat on mount
   useEffect(() => {
     const chatId = localStorage.getItem('currentChatId') || `chat_${Date.now()}`;
     setCurrentChatId(chatId);
@@ -69,7 +70,6 @@ export default function Home() {
     };
   }, []);
 
-  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -128,7 +128,6 @@ export default function Home() {
     const trimmedInput = input.trim();
     if (!trimmedInput || loading) return;
 
-    // ✅ Check if token exists
     if (!token) {
       setError('You must be logged in to send messages');
       return;
@@ -152,16 +151,16 @@ export default function Home() {
       const lines = trimmedInput.split('\n').map((line) => line.trim()).filter(Boolean);
 
       if (lines.length > 1) {
-        // ✅ Bulk generate articles with token
+        // Bulk generate articles
         await axios.post(
-          'http://localhost:3000/api/articles/bulk-generate',
+          `${API_URL}/articles/bulk-generate`,
           {
             titles: lines,
             details: '',
           },
           {
             headers: {
-              Authorization: `Bearer ${token}`, // ✅ Add token
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -176,12 +175,12 @@ export default function Home() {
         setMessages(finalMessages);
         saveChatToHistory(finalMessages);
       } else {
-        // ✅ Single chat message route with token
-        const response = await fetch('http://localhost:3000/api/chat', {
+        // Single chat message
+        const response = await fetch(`${API_URL}/chat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`, // ✅ Add token
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ message: trimmedInput }),
         });
@@ -283,7 +282,7 @@ export default function Home() {
               </div>
 
               <div className="grid md:grid-cols-2 gap-4 text-left">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-2xl border border-blue-200 dark:border-blue-800">
+                <div className="bg-linear-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-2xl border border-blue-200 dark:border-blue-800">
                   <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">
                     💬 Single Message
                   </h3>
@@ -292,7 +291,7 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-2xl border border-purple-200 dark:border-purple-800">
+                <div className="bg-linear-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-2xl border border-purple-200 dark:border-purple-800">
                   <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">
                     📝 Generate Articles
                   </h3>
@@ -430,8 +429,7 @@ export default function Home() {
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
             Press <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs">Enter</kbd> to send •{' '}
-            <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs">Shift + Enter</kbd> for new
-            line
+            <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs">Shift + Enter</kbd> for new line
           </p>
         </div>
       </div>
