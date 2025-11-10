@@ -1,9 +1,12 @@
-# Node modules
+# Dependencies
 node_modules/
+package-lock.json
+yarn.lock
 
 # Environment variables
 .env
 .env.local
+.env.production
 .env.*.local
 
 # Build output
@@ -11,22 +14,28 @@ dist/
 build/
 
 # Logs
-*.log
 logs/
-
-# TypeScript cache
-*.tsbuildinfo
-
-# Nodemon
-nodemon-debug.log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# Editor folders
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# Temporary files
-*.tmp
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.cache/
+temp/
+tmp/

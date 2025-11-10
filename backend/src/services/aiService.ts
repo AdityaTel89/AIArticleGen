@@ -7,15 +7,15 @@ export const generateContentWithGemini = async (prompt: string): Promise<string>
       {
         contents: [
           {
-            parts: [{ text: prompt }]
-          }
-        ]
+            parts: [{ text: prompt }],
+          },
+        ],
       },
       {
         headers: {
           'x-goog-api-key': process.env.GEMINI_API_KEY!,
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       }
     );
 
@@ -26,7 +26,15 @@ export const generateContentWithGemini = async (prompt: string): Promise<string>
   }
 };
 
-export const generateArticleContent = async (title: string, details: string = ''): Promise<string> => {
-  const prompt = `Write a detailed, well-structured programming article titled "${title}". ${details}. Include examples and best practices.`;
+export const generateArticleContent = async (
+  title: string,
+  details: string = ''
+): Promise<string> => {
+  const prompt = `Write a detailed, well-structured programming article titled "${title}". ${details}. Include code examples, best practices, and explanations. Format the response in Markdown with proper headings, code blocks, and formatting.`;
+  return await generateContentWithGemini(prompt);
+};
+
+export const generateChatResponse = async (message: string): Promise<string> => {
+  const prompt = `You are a helpful AI assistant. Respond to the following message: "${message}"`;
   return await generateContentWithGemini(prompt);
 };
